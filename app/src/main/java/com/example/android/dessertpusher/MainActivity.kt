@@ -26,11 +26,14 @@ import androidx.core.app.ShareCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LifecycleObserver
 import com.example.android.dessertpusher.databinding.ActivityMainBinding
+import timber.log.Timber
 
 class MainActivity : AppCompatActivity(), LifecycleObserver {
 
     private var revenue = 0
     private var dessertsSold = 0
+
+    private lateinit var desertTimer : DessertTimer
 
     // Contains all the views
     private lateinit var binding: ActivityMainBinding
@@ -71,6 +74,9 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
         binding.dessertButton.setOnClickListener {
             onDessertClicked()
         }
+
+        Timber.i("onCreate called")
+        desertTimer = DessertTimer()
 
         // Set the TextViews to the right values
         binding.revenue = revenue
@@ -145,5 +151,37 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
             R.id.shareMenuButton -> onShare()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Timber.i("onStartCalled")
+        desertTimer.startTimer()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Timber.i("onResumeCalled")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Timber.i("onPauseCalled")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Timber.i("onStopCalled")
+        desertTimer.stopTimer()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Timber.i("onDestroyCalled")
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        Timber.i("onRestartCalled")
     }
 }
