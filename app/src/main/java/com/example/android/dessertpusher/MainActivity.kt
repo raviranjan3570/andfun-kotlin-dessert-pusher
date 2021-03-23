@@ -28,12 +28,16 @@ import androidx.lifecycle.LifecycleObserver
 import com.example.android.dessertpusher.databinding.ActivityMainBinding
 import timber.log.Timber
 
+const val KEY_REVENUE = "key_revenue"
+const val KEY_DESSERT_SOLD = "key_dessert_sold"
+const val KEY_TIMER_SECONDS = "key_timer_seconds"
+
 class MainActivity : AppCompatActivity(), LifecycleObserver {
 
     private var revenue = 0
     private var dessertsSold = 0
 
-    private lateinit var desertTimer : DessertTimer
+    private lateinit var dessertTimer : DessertTimer
 
     // Contains all the views
     private lateinit var binding: ActivityMainBinding
@@ -76,7 +80,13 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
         }
 
         Timber.i("onCreate called")
-        desertTimer = DessertTimer(this.lifecycle)
+        dessertTimer = DessertTimer(this.lifecycle)
+
+        if(savedInstanceState != null){
+            revenue = savedInstanceState.getInt(KEY_REVENUE)
+            dessertsSold = savedInstanceState.getInt(KEY_DESSERT_SOLD)
+            dessertTimer.secondsCount = savedInstanceState.getInt(KEY_TIMER_SECONDS)
+        }
 
         // Set the TextViews to the right values
         binding.revenue = revenue
@@ -161,6 +171,19 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
     override fun onResume() {
         super.onResume()
         Timber.i("onResumeCalled")
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        Timber.i("onSaveInstanceState called")
+        outState.putInt(KEY_REVENUE, revenue)
+        outState.putInt(KEY_DESSERT_SOLD, dessertsSold)
+        outState.putInt(KEY_TIMER_SECONDS, dessertTimer.secondsCount)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        Timber.i("onRestoreInstanceState called")
     }
 
     override fun onPause() {
